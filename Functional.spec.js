@@ -1,5 +1,19 @@
 import { test, expect } from '@playwright/test';
-
+// Trace Viewer if you have any failure in the script
+let context
+ let page
+ test.beforeAll(async ({ browser }) => {
+  context = await browser.newContext()
+  await context.tracing.start(
+    { screenshots: true, 
+      snapshots: true 
+    })
+  page = await context.newPage()
+ })
+ 
+ test.afterAll(async () => {
+  await context.tracing.stop({ path: 'testfirefox-trace.zip' })
+ })
 test('test', async ({ page }) => {
   await page.goto('https://www.saucedemo.com/');
   await page.locator('[data-test="username"]').click();
